@@ -49,6 +49,7 @@ public class ArticleServiceImpl implements ArticleService{
         AppUser testUser = appUserRepo.findById(idAuteur).
                 orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Erreur, aucun d'auteur défini"));
 
+        article.setDate(java.time.LocalDateTime.now());
         article.setAuteur(testUser);
 
         return articleRepo.save(article);

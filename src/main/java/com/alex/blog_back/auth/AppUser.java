@@ -2,6 +2,7 @@ package com.alex.blog_back.auth;
 
 import com.alex.blog_back.model.Article;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -30,7 +31,7 @@ public class AppUser implements UserDetails {
     private String password;
 
     @OneToMany( mappedBy = "auteur")
-    @JsonIgnore
+    @JsonIgnoreProperties({"auteur"})
     private List<Article> articles;
 
     @JsonIgnore
