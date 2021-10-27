@@ -23,8 +23,9 @@ public class ArticleController {
                 );
     }
 
+
     @GetMapping("/{id}")
-    public ResponseEntity<Optional<Article>> findClientById(@PathVariable Long id) {
+    public ResponseEntity<Optional<Article>> findArticleById(@PathVariable Long id) {
         return ResponseEntity.ok(articleService.findArticleById(id));
     }
 

@@ -19,7 +19,7 @@ public class Article {
     private String titre;
     @Column(length = 2000)
     private String contenu;
-    private LocalDateTime date;
+    private String date;
 
     @ManyToOne
     @JoinColumn

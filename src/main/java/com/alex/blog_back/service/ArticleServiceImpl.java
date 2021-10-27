@@ -9,6 +9,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.text.DateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -49,7 +51,15 @@ public class ArticleServiceImpl implements ArticleService{
         AppUser testUser = appUserRepo.findById(idAuteur).
                 orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Erreur, aucun d'auteur défini"));
 
-        article.setDate(java.time.LocalDateTime.now());
+        DateFormat mediumDateFormat = (DateFormat.getDateTimeInstance(
+                DateFormat.MEDIUM,
+                DateFormat.MEDIUM));
+        String date = mediumDateFormat.format(new Date());
+        article.setDate(
+                ("Le " + date.substring(0, date.length()-3))
+                        .replace(":", "h")
+        );
+
         article.setAuteur(testUser);
 
         return articleRepo.save(article);
