@@ -15,13 +15,18 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api")
+@RequestMapping("/api/user")
 public class AppUserController {
     private final AppUserService appUserService;
 
-    @GetMapping("/users")
+    @GetMapping("/all")
     public ResponseEntity<List<AppUser>> getAllUsers() {
         return ResponseEntity.ok().body(appUserService.getUsers());
+    }
+
+    @GetMapping("/{username}")
+    public ResponseEntity<AppUser> getUser(@PathVariable  String username) {
+        return ResponseEntity.ok().body(appUserService.getUser(username));
     }
 
     @PostMapping("/user/save")

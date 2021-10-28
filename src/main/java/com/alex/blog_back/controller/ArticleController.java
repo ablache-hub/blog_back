@@ -16,7 +16,7 @@ import java.util.Optional;
 public class ArticleController {
     final private ArticleServiceImpl articleService;
 
-    @GetMapping
+    @GetMapping("/all")
     ResponseEntity<List<Article>> getAllArticles() {
         return ResponseEntity.ok().body(
                 articleService.findAllArticle()
@@ -25,7 +25,7 @@ public class ArticleController {
 
 
     @GetMapping("/{id}")
-    public ResponseEntity<Optional<Article>> findArticleById(@PathVariable Long id) {
+    ResponseEntity<Optional<Article>> findArticleById(@PathVariable Long id) {
         return ResponseEntity.ok(articleService.findArticleById(id));
     }
 

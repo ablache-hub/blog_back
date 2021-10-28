@@ -31,12 +31,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable()
-             /*   .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
                 .addFilter(new CustomAuthenticationFilter(authenticationManagerBean()))
-                .authorizeRequests().anyRequest().authenticated();*/
-                .authorizeRequests()
+                .authorizeRequests().anyRequest().authenticated();
+               /* .authorizeRequests()
                 .antMatchers("/**").permitAll()
-                .anyRequest().authenticated();
+                .anyRequest().authenticated();*/
 
     }
 
@@ -48,7 +48,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     public void configure(WebSecurity web) throws Exception {
-//        web.ignoring().antMatchers("/api/user/save", "/error", "/api/role/save", "/api/role/addroleuser");
-        web.ignoring().antMatchers("**");
+        web.ignoring().antMatchers("/api/user/save", "/error", "/api/role/save", "/api/role/addroleuser");
+//        web.ignoring().antMatchers("**");
     }
 }

@@ -13,4 +13,5 @@ public interface ArticleService {
     void deleteArticle(Long id);
 
     Article addArticleWithAuteur(Article article, Long idAuteur);
+
 }
