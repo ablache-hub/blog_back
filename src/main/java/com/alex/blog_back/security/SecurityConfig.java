@@ -1,11 +1,13 @@
 package com.alex.blog_back.security;
 
-import com.alex.blog_back.filter.CustomAuthenticationFilter;
+import com.alex.blog_back.jwt.JwtAuthFilter;
+import com.alex.blog_back.jwt.JwtRequestTokenFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -16,6 +18,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 @Configuration
 @EnableWebSecurity
+@EnableGlobalMethodSecurity(prePostEnabled = true) //Permet l'utilisation de PreAuthorize dans le controller
 @RequiredArgsConstructor
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
     //TODO Tester avec cette variable pluôt que le bean
@@ -30,10 +33,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.csrf().disable()
+        http
+                .csrf().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
-                .addFilter(new CustomAuthenticationFilter(authenticationManagerBean()))
-                .authorizeRequests().anyRequest().authenticated();
+                .addFilter(new JwtAuthFilter(authenticationManager()))
+                .addFilterAfter(new JwtRequestTokenFilter(), JwtAuthFilter.class)
+                .authorizeRequests()
+//              .antMatchers(/*"/", "/index",*/ "/registration").permitAll().
+                .anyRequest()
+                .authenticated()
+
+        ;
                /* .authorizeRequests()
                 .antMatchers("/**").permitAll()
                 .anyRequest().authenticated();*/

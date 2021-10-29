@@ -42,7 +42,7 @@ public class AppUserImpl implements AppUserService, UserDetailsService {
         appuser.getRoles().forEach(role -> {
             authorities.add(new SimpleGrantedAuthority(role.getName()));
         });*/
-        return new User(appuser.getUsername(), appuser.getPassword(), appuser.getAuthorities());
+        return appuser;
     }
 
     //TODO Ajouter controles divers
