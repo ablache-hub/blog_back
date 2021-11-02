@@ -17,6 +17,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.security.Principal;
 import java.time.LocalDate;
 import java.util.Date;
 
@@ -31,7 +32,7 @@ public class JwtAuthFilter extends UsernamePasswordAuthenticationFilter {
     public Authentication attemptAuthentication(HttpServletRequest request,
                                                 HttpServletResponse response) throws AuthenticationException {
 
-        try{
+        try {
             // Réception de la request de type HttpServlet puis conversion grâce au ObjectMapper en SubscriptionRequestTemplate
             // Type SubsReqTemplate qui permet d'avoir accès au password/username. Stock le tout dans un OM qui prend en param 1 les entrées clavier et en param 2indique le format dans notre class SubsReqTemplate
             SubRequestTemplate authenticationRequest = new ObjectMapper().readValue(request.getInputStream(), SubRequestTemplate.class);
@@ -51,11 +52,12 @@ public class JwtAuthFilter extends UsernamePasswordAuthenticationFilter {
             // On return l'authentication finale
             return tryAuthentication;
 
-        } catch(IOException exception){
+        } catch (IOException exception) {
             throw new RuntimeException(exception);
-            }
+        }
 
     }
+
     // Création et renvoi du Token au client si authentifié
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication tryAuthenticationSucces) throws IOException, ServletException {
 
@@ -70,7 +72,10 @@ public class JwtAuthFilter extends UsernamePasswordAuthenticationFilter {
 
         // Renvoie du token dans le header de la response envoyée au client de la part du sever
         response.addHeader(HttpHeaders.AUTHORIZATION, "Bearer " + token);
-        response.getWriter().write(String.valueOf(tryAuthenticationSucces.getAuthorities()));
+        response.addHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_CREDENTIALS, tryAuthenticationSucces.getName());
+        response.addHeader(HttpHeaders.ALLOW, String.valueOf(tryAuthenticationSucces.getAuthorities()));
+//        response.getWriter().write(String.valueOf(tryAuthenticationSucces.getAuthorities()));
+
     }
 }
 

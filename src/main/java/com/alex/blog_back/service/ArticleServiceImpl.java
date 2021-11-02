@@ -6,17 +6,20 @@ import com.alex.blog_back.repo.AppUserRepo;
 import com.alex.blog_back.repo.ArticleRepo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.security.Principal;
 import java.text.DateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class ArticleServiceImpl implements ArticleService{
+public class ArticleServiceImpl implements ArticleService {
 
     private final ArticleRepo articleRepo;
     private final AppUserRepo appUserRepo;
@@ -47,7 +50,28 @@ public class ArticleServiceImpl implements ArticleService{
     }
 
     @Override
-    public Article addArticleWithAuteur(Article article, Long idAuteur) {
+    public Article addArticleWithAuteurName(Article article, String username) throws IllegalAccessException {
+        if (!Objects.equals(username, SecurityContextHolder.getContext().getAuthentication().getPrincipal())) {
+            throw new IllegalAccessException("Mauvais utilisateur");
+        }
+        AppUser testUser = appUserRepo.findByUsername(username).
+                orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Erreur, aucun d'auteur défini"));
+
+        DateFormat mediumDateFormat = (DateFormat.getDateTimeInstance(
+                DateFormat.MEDIUM,
+                DateFormat.MEDIUM));
+        String date = mediumDateFormat.format(new Date());
+        article.setDate(
+                ("Le " + date.substring(0, date.length() - 3))
+                        .replace(":", "h")
+        );
+
+        article.setAuteur(testUser);
+        return articleRepo.save(article);
+    }
+
+   /* @Override
+    public Article addArticleWithAuteurId(Article article, Long idAuteur) {
         AppUser testUser = appUserRepo.findById(idAuteur).
                 orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Erreur, aucun d'auteur défini"));
 
@@ -56,13 +80,13 @@ public class ArticleServiceImpl implements ArticleService{
                 DateFormat.MEDIUM));
         String date = mediumDateFormat.format(new Date());
         article.setDate(
-                ("Le " + date.substring(0, date.length()-3))
+                ("Le " + date.substring(0, date.length() - 3))
                         .replace(":", "h")
         );
 
         article.setAuteur(testUser);
 
         return articleRepo.save(article);
-    }
+    }*/
 
 }

@@ -25,8 +25,8 @@ public class AppUserController {
         return ResponseEntity.ok().body(appUserService.getUsers());
     }
 
-    @GetMapping("/{username}")
-    @PreAuthorize("hasRole('ROLE_USER')")
+    @GetMapping("/get/{username}")
+//    @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<AppUser> getUser(@PathVariable  String username) {
         return ResponseEntity.ok().body(appUserService.getUser(username));
     }

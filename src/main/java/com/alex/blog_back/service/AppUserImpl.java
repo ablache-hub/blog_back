@@ -8,12 +8,14 @@ import com.alex.blog_back.repo.RoleRepo;
 import com.sun.jdi.request.DuplicateRequestException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import javax.transaction.Transactional;
 import java.util.List;
@@ -31,13 +33,8 @@ public class AppUserImpl implements AppUserService, UserDetailsService {
     //TODO Completer "loadbyusername"
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        AppUser appuser = appUserRepo.findByUsername(username);
-        if (appuser == null) {
-            log.error("L'utilisateur " +username+ " n'existe pas");
-            throw new UsernameNotFoundException("L'utilisateur " +username+ " n'existe pas");
-        } else {
-            log.info("Utilisateur {}", username);
-        }
+        AppUser appuser = appUserRepo.findByUsername(username)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "L'utilisateur " + username + " n'existe pas"));
 /*        Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
         appuser.getRoles().forEach(role -> {
             authorities.add(new SimpleGrantedAuthority(role.getName()));
@@ -69,11 +66,14 @@ public class AppUserImpl implements AppUserService, UserDetailsService {
 
     @Override
     public void addRoleToUser(String username, String rolename) {
-        AppUser appUser = appUserRepo.findByUsername(username);
+        AppUser appUser = appUserRepo.findByUsername(username)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Erreur, utilisateur inexistant"));
+        ;
         Role role = roleRepo.findByName(rolename);
         appUser.getRoles().forEach(eachRole -> {
                     if (eachRole.getName().equals(role.getName())) {
-                        throw new DuplicateRequestException("Ce rôle est déjà attribué à cet utilisateur"); }
+                        throw new DuplicateRequestException("Ce rôle est déjà attribué à cet utilisateur");
+                    }
                 }
         );
         log.info("Ajout du rôle {} pour l'utilisateur {}", rolename, username);
@@ -83,7 +83,8 @@ public class AppUserImpl implements AppUserService, UserDetailsService {
     @Override
     public AppUser getUser(String username) {
         log.info("Recup de l'utilisateur {}", username);
-        return appUserRepo.findByUsername(username);
+        return appUserRepo.findByUsername(username)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "L'utilisateur " + username + " n'existe pas"));
     }
 
     @Override

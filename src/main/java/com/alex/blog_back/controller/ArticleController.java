@@ -16,15 +16,15 @@ import java.util.Optional;
 public class ArticleController {
     final private ArticleServiceImpl articleService;
 
-    @GetMapping("/all")
+    @GetMapping("/get/all")
     ResponseEntity<List<Article>> getAllArticles() {
         return ResponseEntity.ok().body(
                 articleService.findAllArticle()
-                );
+        );
     }
 
 
-    @GetMapping("/{id}")
+    @GetMapping("/get/{id}")
     ResponseEntity<Optional<Article>> findArticleById(@PathVariable Long id) {
         return ResponseEntity.ok(articleService.findArticleById(id));
     }
@@ -35,8 +35,13 @@ public class ArticleController {
     }
 
 
-    @PostMapping("/{idAuteur}")
+  /*  @PostMapping("/auteurid/{idAuteur}")
     ResponseEntity<Article> addArticleWithAuteur(@RequestBody Article article, @PathVariable Long idAuteur) {
-        return ResponseEntity.ok().body(articleService.addArticleWithAuteur(article, idAuteur));
+        return ResponseEntity.ok().body(articleService.addArticleWithAuteurId(article, idAuteur));
+    }*/
+
+    @PostMapping("/{username}")
+    ResponseEntity<Article> addArticleWithAuteur(@RequestBody Article article, @PathVariable String username) throws IllegalAccessException {
+        return ResponseEntity.ok().body(articleService.addArticleWithAuteurName(article, username));
     }
 }
