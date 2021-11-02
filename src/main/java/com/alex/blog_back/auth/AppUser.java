@@ -30,7 +30,7 @@ public class AppUser implements UserDetails {
     @JsonIgnore
     private String password;
 
-    @OneToMany( mappedBy = "auteur")
+    @OneToMany(mappedBy = "auteur")
     @JsonIgnoreProperties({"auteur"})
     private List<Article> articles;
 
@@ -51,7 +51,6 @@ public class AppUser implements UserDetails {
     public AppUser(String username, String password) {
         this.username = username;
         this.password = password;
-        roles.add(new Role(1L, "ROLE_USER"));
     }
 
     @JsonIgnore

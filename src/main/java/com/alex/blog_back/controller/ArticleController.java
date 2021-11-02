@@ -4,6 +4,7 @@ import com.alex.blog_back.model.Article;
 import com.alex.blog_back.service.ArticleServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -40,6 +41,7 @@ public class ArticleController {
         return ResponseEntity.ok().body(articleService.addArticleWithAuteurId(article, idAuteur));
     }*/
 
+    @PreAuthorize("hasRole('ROLE_AUTEUR')")
     @PostMapping("/{username}")
     ResponseEntity<Article> addArticleWithAuteur(@RequestBody Article article, @PathVariable String username) throws IllegalAccessException {
         return ResponseEntity.ok().body(articleService.addArticleWithAuteurName(article, username));
