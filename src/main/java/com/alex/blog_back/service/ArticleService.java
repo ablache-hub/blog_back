@@ -14,7 +14,7 @@ public interface ArticleService {
 
     void updateArticle(Long id, Article article);
 
-    void deleteArticle(Long id);
+    void deleteArticleByAuthorAndIdService(String username, Long id) throws IllegalAccessException;
 
     Article addArticleWithAuteurName(Article article, String username) throws IllegalAccessException;
 

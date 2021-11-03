@@ -45,7 +45,15 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     @Override
-    public void deleteArticle(Long id) {
+    public void deleteArticleByAuthorAndIdService(String username, Long id) throws IllegalAccessException {
+        Article article = articleRepo.findById(id)
+                .orElseThrow(() -> new NullPointerException("Cet article n'éxiste pas"));
+        if (username.equals(article.getAuteur().getUsername()) &&
+                username.equals(SecurityContextHolder.getContext().getAuthentication().getPrincipal())
+        ) {
+            articleRepo.deleteById(id);
+        } else
+            throw new IllegalAccessException("Action non autorisée pour cet utilisateur");
 
     }
 

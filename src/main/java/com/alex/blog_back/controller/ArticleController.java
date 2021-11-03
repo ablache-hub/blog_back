@@ -46,4 +46,13 @@ public class ArticleController {
     ResponseEntity<Article> addArticleWithAuteur(@RequestBody Article article, @PathVariable String username) throws IllegalAccessException {
         return ResponseEntity.ok().body(articleService.addArticleWithAuteurName(article, username));
     }
+
+    @PreAuthorize("hasRole('ROLE_AUTEUR')")
+    @DeleteMapping("auteur/{username}/delete/{id}")
+    ResponseEntity<Article> deleteArticleByAuthorAndId(
+            @PathVariable(value = "username") String username,
+            @PathVariable(value = "id") Long id) throws IllegalAccessException {
+        articleService.deleteArticleByAuthorAndIdService(username, id);
+        return ResponseEntity.accepted().build();
+    }
 }
