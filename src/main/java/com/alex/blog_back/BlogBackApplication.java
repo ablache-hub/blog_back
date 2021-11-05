@@ -4,8 +4,10 @@ import com.alex.blog_back.auth.AppUser;
 import com.alex.blog_back.auth.Role;
 import com.alex.blog_back.auth.SubRequestTemplate;
 import com.alex.blog_back.model.Article;
+import com.alex.blog_back.model.Categorie;
 import com.alex.blog_back.service.AppUserService;
 import com.alex.blog_back.service.ArticleService;
+import com.alex.blog_back.service.CategorieService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -20,12 +22,17 @@ public class BlogBackApplication {
     }
 
     @Bean
-    CommandLineRunner run(AppUserService appUserService, ArticleService articleService) {
+    CommandLineRunner run(AppUserService appUserService, ArticleService articleService, CategorieService categorieService) {
         return args -> {
             appUserService.newRole(new Role(null, "ROLE_AUTEUR"));
             appUserService.newRole(new Role(null, "ROLE_ADMIN"));
             appUserService.newRole(new Role(null, "ROLE_LECTEUR"));
 
+            categorieService.newCategorie(new Categorie(null, "Sport", null));
+            categorieService.newCategorie(new Categorie(null, "Santé", null));
+            categorieService.newCategorie(new Categorie(null, "Cinema", null));
+            categorieService.newCategorie(new Categorie(null, "Nutrition", null));
+            categorieService.newCategorie(new Categorie(null, "Technologies", null));
 
             appUserService.newUser(new SubRequestTemplate("test_Lecteur@gmail.com", "test"));
             appUserService.newUser(new SubRequestTemplate("test_Auteur@gmail.com", "test"));

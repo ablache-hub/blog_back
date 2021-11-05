@@ -8,7 +8,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.net.URI;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,8 +20,8 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class ArticleController {
     final private ArticleServiceImpl articleService;
-    final private CategorieRepo categorieRepo;
 
+    //GET all articles
     @GetMapping("/get/all")
     ResponseEntity<List<Article>> getAllArticles() {
         return ResponseEntity.ok().body(
@@ -27,11 +29,18 @@ public class ArticleController {
         );
     }
 
-
+    //GET Article par Id
     @GetMapping("/get/{id}")
     ResponseEntity<Optional<Article>> findArticleById(@PathVariable Long id) {
         return ResponseEntity.ok(articleService.findArticleById(id));
     }
+
+    //GET articles par catégorie
+    @GetMapping("/get/allByCategorie/{categorie}")
+    ResponseEntity<Optional<List<Article>>> findAllArticleByCategorie(@PathVariable("categorie") String categorie) {
+        return ResponseEntity.ok().body(articleService.findAllArticleByCategorieServ(categorie));
+    }
+
 
     @PostMapping
     ResponseEntity<Article> addArticle(@RequestBody Article article) {
@@ -44,10 +53,13 @@ public class ArticleController {
         return ResponseEntity.ok().body(articleService.addArticleWithAuteurId(article, idAuteur));
     }*/
 
+    // POST Nouvel Article avec auteur et catégorie
     @PreAuthorize("hasRole('ROLE_AUTEUR')")
     @PostMapping("/{username}")
-    ResponseEntity<Article> addArticleWithAuteur(@RequestBody Article article, @PathVariable String username) throws IllegalAccessException {
-        return ResponseEntity.ok().body(articleService.addArticleWithAuteurName(article, username));
+    ResponseEntity<Article> addArticleWithAuteur(@RequestBody Article article,
+                                                 @PathVariable String username,
+                                                 @RequestParam(required = false) String categorie) throws IllegalAccessException {
+        return ResponseEntity.ok().body(articleService.addArticleWithAuteurName(article, username, categorie));
     }
 
     @PreAuthorize("hasRole('ROLE_AUTEUR')")
@@ -59,13 +71,5 @@ public class ArticleController {
         return ResponseEntity.accepted().build();
     }
 
-    @PostMapping("/newCategorie/")
-    ResponseEntity<Categorie> addCategory(@RequestBody Categorie categorie) {
-        return ResponseEntity.ok().body(articleService.newCategorie(categorie));
-    }
 
-    @GetMapping("/get/allByCategorie/{categorie}")
-    ResponseEntity<Optional<List<Article>>> findAllByCategorie(@PathVariable("categorie") String categorie) {
-        return ResponseEntity.ok().body(articleService.findAllArticleByCategorieServ(categorie));
-    }
 }

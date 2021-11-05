@@ -12,6 +12,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import javax.transaction.Transactional;
 import java.lang.module.FindException;
 import java.security.Principal;
 import java.text.DateFormat;
@@ -21,6 +22,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class ArticleServiceImpl implements ArticleService {
 
@@ -37,6 +39,12 @@ public class ArticleServiceImpl implements ArticleService {
     public List<Article> findAllArticle() {
         return articleRepo.findAll();
     }
+
+    @Override
+    public List<Categorie> findAllCategorie() {
+        return categorieRepo.findAll();
+    }
+
 
     @Override
     public Article addArticle(Article article) {
@@ -62,13 +70,25 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     @Override
-    public Article addArticleWithAuteurName(Article article, String username) throws IllegalAccessException {
+    public Article addArticleWithAuteurName(Article article, String username, String categorie) throws IllegalAccessException {
+        //Vérification username nouvel article == username authentifié
         if (!Objects.equals(username, SecurityContextHolder.getContext().getAuthentication().getPrincipal())) {
             throw new IllegalAccessException("Mauvais utilisateur");
         }
-        AppUser testUser = appUserRepo.findByUsername(username).
-                orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Erreur, aucun auteur défini"));
 
+        //Verif existance username puis ajout dans l'article
+        article.setAuteur(
+                appUserRepo.findByUsername(username)
+                        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Erreur, aucun auteur défini"))
+        );
+
+        //Verif existance categorie puis ajout dans l'article
+        article.setCategorie(
+                categorieRepo.findCategorieByNom(categorie)
+                        .orElse(null));
+        
+
+        //Enreg. date de création article
         DateFormat mediumDateFormat = (DateFormat.getDateTimeInstance(
                 DateFormat.MEDIUM,
                 DateFormat.MEDIUM));
@@ -78,16 +98,9 @@ public class ArticleServiceImpl implements ArticleService {
                         .replace(":", "h")
         );
 
-        article.setAuteur(testUser);
         return articleRepo.save(article);
     }
 
-    @Override
-    public Categorie newCategorie(Categorie categorie) {
-        if (categorieRepo.findCategorieByNom(categorie.getNom()).isEmpty()) {
-            return categorieRepo.save(categorie);
-        } else throw new FindException("Catégorie déjà existante");
-    }
 
     @Override
     public Optional<List<Article>> findAllArticleByCategorieServ(String categorie) {
@@ -96,7 +109,8 @@ public class ArticleServiceImpl implements ArticleService {
         return articleRepo.findByCategorie(currentCategorie);
     }
 
-   /* @Override
+
+/* @Override
     public Article addArticleWithAuteurId(Article article, Long idAuteur) {
         AppUser testUser = appUserRepo.findById(idAuteur).
                 orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Erreur, aucun d'auteur défini"));

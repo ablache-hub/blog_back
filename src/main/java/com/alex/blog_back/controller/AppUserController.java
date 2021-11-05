@@ -27,7 +27,7 @@ public class AppUserController {
 
     @GetMapping("/get/{username}")
 //    @PreAuthorize("hasRole('ROLE_USER')")
-    public ResponseEntity<AppUser> getUser(@PathVariable  String username) {
+    public ResponseEntity<AppUser> getUser(@PathVariable String username) {
         return ResponseEntity.ok().body(appUserService.getUser(username));
     }
 
@@ -45,8 +45,9 @@ public class AppUserController {
 
     @PostMapping("/role/addroleuser")
     public ResponseEntity<Void> addRoleToUser(@RequestBody RoleToUserTemplate role) {
+        URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/role/addroleuser").toUriString());
         appUserService.addRoleToUser(role.getUsername(), role.getRoleName());
-        return ResponseEntity.ok().build();
+        return ResponseEntity.created(uri).build();
     }
 
 }
