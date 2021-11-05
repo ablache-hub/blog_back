@@ -2,14 +2,17 @@ package com.alex.blog_back.service;
 
 import com.alex.blog_back.auth.AppUser;
 import com.alex.blog_back.model.Article;
+import com.alex.blog_back.model.Categorie;
 import com.alex.blog_back.repo.AppUserRepo;
 import com.alex.blog_back.repo.ArticleRepo;
+import com.alex.blog_back.repo.CategorieRepo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.lang.module.FindException;
 import java.security.Principal;
 import java.text.DateFormat;
 import java.util.Date;
@@ -23,6 +26,7 @@ public class ArticleServiceImpl implements ArticleService {
 
     private final ArticleRepo articleRepo;
     private final AppUserRepo appUserRepo;
+    private final CategorieRepo categorieRepo;
 
     @Override
     public Optional<Article> findArticleById(Long id) {
@@ -63,7 +67,7 @@ public class ArticleServiceImpl implements ArticleService {
             throw new IllegalAccessException("Mauvais utilisateur");
         }
         AppUser testUser = appUserRepo.findByUsername(username).
-                orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Erreur, aucun d'auteur défini"));
+                orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Erreur, aucun auteur défini"));
 
         DateFormat mediumDateFormat = (DateFormat.getDateTimeInstance(
                 DateFormat.MEDIUM,
@@ -76,6 +80,20 @@ public class ArticleServiceImpl implements ArticleService {
 
         article.setAuteur(testUser);
         return articleRepo.save(article);
+    }
+
+    @Override
+    public Categorie newCategorie(Categorie categorie) {
+        if (categorieRepo.findCategorieByNom(categorie.getNom()).isEmpty()) {
+            return categorieRepo.save(categorie);
+        } else throw new FindException("Catégorie déjà existante");
+    }
+
+    @Override
+    public Optional<List<Article>> findAllArticleByCategorieServ(String categorie) {
+        Categorie currentCategorie = categorieRepo.findCategorieByNom(categorie)
+                .orElseThrow(() -> new NullPointerException("Cette catégorie n'existe pas"));
+        return articleRepo.findByCategorie(currentCategorie);
     }
 
    /* @Override

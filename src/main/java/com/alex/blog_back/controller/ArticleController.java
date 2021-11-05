@@ -1,6 +1,8 @@
 package com.alex.blog_back.controller;
 
 import com.alex.blog_back.model.Article;
+import com.alex.blog_back.model.Categorie;
+import com.alex.blog_back.repo.CategorieRepo;
 import com.alex.blog_back.service.ArticleServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +18,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class ArticleController {
     final private ArticleServiceImpl articleService;
+    final private CategorieRepo categorieRepo;
 
     @GetMapping("/get/all")
     ResponseEntity<List<Article>> getAllArticles() {
@@ -54,5 +57,15 @@ public class ArticleController {
             @PathVariable(value = "id") Long id) throws IllegalAccessException {
         articleService.deleteArticleByAuthorAndIdService(username, id);
         return ResponseEntity.accepted().build();
+    }
+
+    @PostMapping("/newCategorie/")
+    ResponseEntity<Categorie> addCategory(@RequestBody Categorie categorie) {
+        return ResponseEntity.ok().body(articleService.newCategorie(categorie));
+    }
+
+    @GetMapping("/get/allByCategorie/{categorie}")
+    ResponseEntity<Optional<List<Article>>> findAllByCategorie(@PathVariable("categorie") String categorie) {
+        return ResponseEntity.ok().body(articleService.findAllArticleByCategorieServ(categorie));
     }
 }

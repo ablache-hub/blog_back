@@ -10,7 +10,8 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-@NoArgsConstructor@Getter
+@NoArgsConstructor
+@Getter
 @Setter
 public class Article {
     @Id
@@ -37,4 +38,5 @@ public class Article {
         this.auteur = auteur;
         this.categorie = categorie;
     }
+    
 }

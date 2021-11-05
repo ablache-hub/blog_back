@@ -1,6 +1,7 @@
 package com.alex.blog_back.model;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,6 +21,7 @@ public class Categorie {
     Long id;
     String nom;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "categorie")
     List<Article> articles;
 }
