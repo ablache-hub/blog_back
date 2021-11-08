@@ -7,7 +7,6 @@ import com.alex.blog_back.auth.SubRequestTemplate;
 import com.alex.blog_back.service.AppUserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -29,6 +28,11 @@ public class AppUserController {
 //    @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<AppUser> getUser(@PathVariable String username) {
         return ResponseEntity.ok().body(appUserService.getUser(username));
+    }
+
+    @GetMapping("/myCredentials")
+    public ResponseEntity<AppUser> getCredentials() {
+        return ResponseEntity.ok().body(appUserService.getCredentials());
     }
 
     @PostMapping("/user/save")

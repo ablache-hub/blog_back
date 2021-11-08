@@ -8,9 +8,15 @@ import java.util.List;
 
 public interface AppUserService {
     AppUser newUser(SubRequestTemplate subUser);
+
+    AppUser getCredentials();
+
     Role newRole(Role role);
+
     void addRoleToUser(String username, String rolename);
+
     AppUser getUser(String username);
+
     List<AppUser> getUsers();
 
 }

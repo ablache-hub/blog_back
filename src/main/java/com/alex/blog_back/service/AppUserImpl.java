@@ -9,6 +9,8 @@ import com.sun.jdi.request.DuplicateRequestException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -33,13 +35,12 @@ public class AppUserImpl implements AppUserService, UserDetailsService {
     //TODO Completer "loadbyusername"
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        AppUser appuser = appUserRepo.findByUsername(username)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "L'utilisateur " + username + " n'existe pas"));
-/*        Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
+        /*        Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
         appuser.getRoles().forEach(role -> {
             authorities.add(new SimpleGrantedAuthority(role.getName()));
         });*/
-        return appuser;
+        return appUserRepo.findByUsername(username)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "L'utilisateur " + username + " n'existe pas"));
     }
 
     //TODO Ajouter controles divers
@@ -91,5 +92,10 @@ public class AppUserImpl implements AppUserService, UserDetailsService {
     public List<AppUser> getUsers() {
         log.info("Recup de tous les utilisateurs");
         return appUserRepo.findAll();
+    }
+
+    public AppUser getCredentials() {
+        return appUserRepo.findByUsername((String) SecurityContextHolder.getContext().getAuthentication().getPrincipal())
+                .orElse(null);
     }
 }
