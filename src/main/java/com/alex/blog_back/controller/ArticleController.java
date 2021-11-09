@@ -71,5 +71,12 @@ public class ArticleController {
         return ResponseEntity.accepted().build();
     }
 
+    @PutMapping("auteur/{username}/modify")
+    ResponseEntity<Article> modifyArticle(@PathVariable String username,
+                                          @RequestBody Article article,
+                                          @RequestParam(required = false) String categorie) throws IllegalAccessException {
+        return ResponseEntity.ok().body(articleService.modifyArticle(username, article, categorie));
+    }
+
 
 }

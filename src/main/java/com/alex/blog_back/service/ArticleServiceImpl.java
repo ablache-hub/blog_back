@@ -86,7 +86,7 @@ public class ArticleServiceImpl implements ArticleService {
         article.setCategorie(
                 categorieRepo.findCategorieByNom(categorie)
                         .orElse(null));
-        
+
 
         //Enreg. date de création article
         DateFormat mediumDateFormat = (DateFormat.getDateTimeInstance(
@@ -107,6 +107,38 @@ public class ArticleServiceImpl implements ArticleService {
         Categorie currentCategorie = categorieRepo.findCategorieByNom(categorie)
                 .orElseThrow(() -> new NullPointerException("Cette catégorie n'existe pas"));
         return articleRepo.findByCategorie(currentCategorie);
+    }
+
+    @Override
+    public Article modifyArticle(String username, Article newArticle, String categorie) throws IllegalAccessException {
+        if (!Objects.equals(username, SecurityContextHolder.getContext().getAuthentication().getPrincipal())) {
+            throw new IllegalAccessException("Mauvais utilisateur");
+        }
+
+        Article currentArticle = articleRepo.findById(newArticle.getId())
+                .orElseThrow(() -> new NullPointerException("Cet article n'existe pas"));
+
+        if (newArticle.getTitre() != null) {
+            currentArticle.setTitre(newArticle.getTitre());
+        }
+        if (newArticle.getContenu() != null) {
+            currentArticle.setContenu(newArticle.getContenu());
+        }
+        if (categorie != null) {
+            currentArticle.setCategorie(categorieRepo.findCategorieByNom(categorie)
+                    .orElseThrow(() -> new NullPointerException("Cette catégorie n'existe pas")));
+        }
+
+        DateFormat mediumDateFormat = (DateFormat.getDateTimeInstance(
+                DateFormat.MEDIUM,
+                DateFormat.MEDIUM));
+        String date = mediumDateFormat.format(new Date());
+        currentArticle.setDate(
+                ("Modifié le " + date.substring(0, date.length() - 3))
+                        .replace(":", "h")
+        );
+
+        return articleRepo.save(currentArticle);
     }
 
 

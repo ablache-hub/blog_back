@@ -22,8 +22,9 @@ public interface ArticleService {
 
     Article addArticleWithAuteurName(Article article, String username, String categorie) throws IllegalAccessException;
 
-
     Optional<List<Article>> findAllArticleByCategorieServ(String categorie);
+
+    Article modifyArticle(String username, Article article, String categorie) throws IllegalAccessException;
 
 //    Article addArticleWithAuteurId(Article article, Long idAuteur);
 
