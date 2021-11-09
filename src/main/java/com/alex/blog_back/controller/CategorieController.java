@@ -1,13 +1,9 @@
 package com.alex.blog_back.controller;
 
-import com.alex.blog_back.model.Article;
 import com.alex.blog_back.model.Categorie;
-import com.alex.blog_back.repo.CategorieRepo;
-import com.alex.blog_back.service.ArticleService;
-import com.alex.blog_back.service.ArticleServiceImpl;
+
 import com.alex.blog_back.service.CategorieServiceImpl;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;

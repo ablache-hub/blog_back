@@ -9,9 +9,7 @@ import com.sun.jdi.request.DuplicateRequestException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -69,7 +67,6 @@ public class AppUserImpl implements AppUserService, UserDetailsService {
     public void addRoleToUser(String username, String rolename) {
         AppUser appUser = appUserRepo.findByUsername(username)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Erreur, utilisateur inexistant"));
-        ;
         Role role = roleRepo.findByName(rolename);
         appUser.getRoles().forEach(eachRole -> {
                     if (eachRole.getName().equals(role.getName())) {

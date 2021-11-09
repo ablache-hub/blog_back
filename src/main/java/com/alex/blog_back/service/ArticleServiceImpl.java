@@ -1,6 +1,5 @@
 package com.alex.blog_back.service;
 
-import com.alex.blog_back.auth.AppUser;
 import com.alex.blog_back.model.Article;
 import com.alex.blog_back.model.Categorie;
 import com.alex.blog_back.repo.AppUserRepo;
@@ -13,8 +12,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.transaction.Transactional;
-import java.lang.module.FindException;
-import java.security.Principal;
 import java.text.DateFormat;
 import java.util.Date;
 import java.util.List;
@@ -97,7 +94,6 @@ public class ArticleServiceImpl implements ArticleService {
                 ("Le " + date.substring(0, date.length() - 3))
                         .replace(":", "h")
         );
-
         return articleRepo.save(article);
     }
 

@@ -17,7 +17,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.security.Principal;
 import java.time.LocalDate;
 import java.util.Date;
 
@@ -47,10 +46,9 @@ public class JwtAuthFilter extends UsernamePasswordAuthenticationFilter {
 
             // Tentative d'authentification
             // On utilise l'instance authenticationManager qui dispose d'une méthode authenticate() pour authentifier/non nos données clients dans le moule authentication
-            Authentication tryAuthentication = authenticationManager.authenticate(authentication);
 
             // On return l'authentication finale
-            return tryAuthentication;
+            return authenticationManager.authenticate(authentication);
 
         } catch (IOException exception) {
             throw new RuntimeException(exception);
