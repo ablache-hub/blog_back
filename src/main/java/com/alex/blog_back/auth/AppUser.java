@@ -1,6 +1,7 @@
 package com.alex.blog_back.auth;
 
 import com.alex.blog_back.model.Article;
+import com.alex.blog_back.model.ProfilPic;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
@@ -29,6 +30,11 @@ public class AppUser implements UserDetails {
     private String username;
     @JsonIgnore
     private String password;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "profile_picture_id", referencedColumnName = "id")
+    @JsonIgnoreProperties({"appUser", "data", "article"})
+    private ProfilPic profilePicture;
 
     @OneToMany(mappedBy = "auteur")
     @JsonIgnoreProperties({"auteur"})

@@ -30,6 +30,11 @@ public class Article {
     @JoinColumn
     private Categorie categorie;
 
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "article_picture_id", referencedColumnName = "id")
+    @JsonIgnoreProperties({"appUser", "data", "article"})
+    private ProfilPic articlePicture;
+
     public Article(Long id, String titre, String contenu, AppUser auteur, Categorie categorie) {
         this.id = id;
         this.titre = titre;

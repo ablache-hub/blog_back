@@ -3,7 +3,9 @@ package com.alex.blog_back.service;
 import com.alex.blog_back.auth.AppUser;
 import com.alex.blog_back.auth.Role;
 import com.alex.blog_back.auth.SubRequestTemplate;
+import com.alex.blog_back.model.ProfilPic;
 import com.alex.blog_back.repo.AppUserRepo;
+import com.alex.blog_back.repo.ProfilPicRepository;
 import com.alex.blog_back.repo.RoleRepo;
 import com.sun.jdi.request.DuplicateRequestException;
 import lombok.RequiredArgsConstructor;
@@ -15,10 +17,14 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.transaction.Transactional;
+import java.io.IOException;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -29,6 +35,7 @@ public class AppUserImpl implements AppUserService, UserDetailsService {
     private final AppUserRepo appUserRepo;
     private final RoleRepo roleRepo;
     private final BCryptPasswordEncoder passwordEncoder;
+    private final ProfilPicRepository profilPicRepository;
 
     //TODO Completer "loadbyusername"
     @Override
@@ -76,6 +83,26 @@ public class AppUserImpl implements AppUserService, UserDetailsService {
         );
         log.info("Ajout du rôle {} pour l'utilisateur {}", rolename, username);
         appUser.getRoles().add(role);
+    }
+
+    @Override
+    public AppUser addProfilpicToUser(MultipartFile file, String username) throws IOException {
+        AppUser currentUser = appUserRepo.findByUsername(username)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Erreur, utilisateur inexistant"));
+
+        //Suppression de l'ancienne image
+        if (currentUser.getProfilePicture() != null) {
+            profilPicRepository.delete(currentUser.getProfilePicture());
+        }
+
+        String fileName = StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
+        currentUser.setProfilePicture(
+                new ProfilPic(
+                        fileName,
+                        file.getContentType(),
+                        file.getBytes())
+        );
+        return appUserRepo.save(currentUser);
     }
 
     @Override
