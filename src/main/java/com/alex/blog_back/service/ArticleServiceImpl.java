@@ -1,17 +1,23 @@
 package com.alex.blog_back.service;
 
+import com.alex.blog_back.auth.AppUser;
 import com.alex.blog_back.model.Article;
 import com.alex.blog_back.model.Categorie;
+import com.alex.blog_back.model.ProfilPic;
 import com.alex.blog_back.repo.AppUserRepo;
 import com.alex.blog_back.repo.ArticleRepo;
 import com.alex.blog_back.repo.CategorieRepo;
+import com.alex.blog_back.repo.ProfilPicRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.transaction.Transactional;
+import java.io.IOException;
 import java.text.DateFormat;
 import java.util.Date;
 import java.util.List;
@@ -26,6 +32,8 @@ public class ArticleServiceImpl implements ArticleService {
     private final ArticleRepo articleRepo;
     private final AppUserRepo appUserRepo;
     private final CategorieRepo categorieRepo;
+    private final ProfilPicRepository profilPicRepository;
+
 
     @Override
     public Optional<Article> findArticleById(Long id) {
@@ -138,6 +146,25 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
 
+    @Override
+    public Article addPictureToArticle(MultipartFile file, Long articleId) throws IOException {
+        Article currentArticle = articleRepo.findById(articleId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Erreur, article inexistant"));
+
+        //Suppression de l'ancienne image
+        if (currentArticle.getArticlePicture() != null) {
+            profilPicRepository.delete(currentArticle.getArticlePicture());
+        }
+
+        String fileName = StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
+        currentArticle.setArticlePicture(
+                new ProfilPic(
+                        fileName,
+                        file.getContentType(),
+                        file.getBytes())
+        );
+        return articleRepo.save(currentArticle);
+    }
 /* @Override
     public Article addArticleWithAuteurId(Article article, Long idAuteur) {
         AppUser testUser = appUserRepo.findById(idAuteur).

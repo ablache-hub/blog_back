@@ -2,8 +2,10 @@ package com.alex.blog_back.controller;
 
 import com.alex.blog_back.auth.AppUser;
 import com.alex.blog_back.message.ResponseFile;
+import com.alex.blog_back.model.Article;
 import com.alex.blog_back.model.ProfilPic;
 import com.alex.blog_back.service.AppUserService;
+import com.alex.blog_back.service.ArticleService;
 import com.alex.blog_back.service.FileStorageService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpHeaders;
@@ -26,23 +28,7 @@ public class FileController {
 
     private final FileStorageService storageService;
     private final AppUserService appUserService;
-
-    @PostMapping("/{username}/upload")
-    public ResponseEntity<AppUser> addPicToUser(@RequestParam("file") MultipartFile file,
-                                                @PathVariable String username) throws IOException {
-
-        return ResponseEntity.ok().body(appUserService.addProfilpicToUser(file, username));
-       /* String message = "";
-        try {
-            storageService.store(file);
-
-            message = "Uploaded the file successfully: " + file.getOriginalFilename();
-            return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage(message));
-        } catch (Exception e) {
-            message = "Could not upload the file: " + file.getOriginalFilename() + "!";
-            return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(new ResponseMessage(message));
-        }*/
-    }
+    private final ArticleService articleService;
 
     @GetMapping("/getAll")
     public ResponseEntity<List<ResponseFile>> getListFiles() {
@@ -70,6 +56,30 @@ public class FileController {
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileDB.getName() + "\"")
                 .body(fileDB.getData());
+    }
+
+    @PostMapping("/user/{username}/upload")
+    public ResponseEntity<AppUser> addPicToUser(@RequestParam("file") MultipartFile file,
+                                                @PathVariable String username) throws IOException {
+
+        return ResponseEntity.ok().body(appUserService.addProfilpicToUser(file, username));
+       /* String message = "";
+        try {
+            storageService.store(file);
+
+            message = "Uploaded the file successfully: " + file.getOriginalFilename();
+            return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage(message));
+        } catch (Exception e) {
+            message = "Could not upload the file: " + file.getOriginalFilename() + "!";
+            return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(new ResponseMessage(message));
+        }*/
+    }
+
+    @PostMapping("/article/{articleid}/upload")
+    public ResponseEntity<Article> addPicToArticle(@RequestParam("file") MultipartFile file,
+                                                   @PathVariable Long articleid) throws IOException {
+
+        return ResponseEntity.ok().body(articleService.addPictureToArticle(file, articleid));
     }
 
 /*    @PostMapping("/upload")
