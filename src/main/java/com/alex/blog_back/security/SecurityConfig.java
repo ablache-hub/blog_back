@@ -65,7 +65,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 "/api/role/addroleuser",
                 "/article/get/**",
                 "/api/user/get/**",
-                "/api/categorie/**");
+                "/api/categorie/**",
+                "/file/**");
 //        web.ignoring().antMatchers("**");
     }
 }
