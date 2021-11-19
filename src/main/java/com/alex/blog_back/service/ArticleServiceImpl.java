@@ -2,6 +2,7 @@ package com.alex.blog_back.service;
 
 import com.alex.blog_back.auth.AppUser;
 import com.alex.blog_back.model.Article;
+import com.alex.blog_back.model.ArticleRequestTemplate;
 import com.alex.blog_back.model.Categorie;
 import com.alex.blog_back.model.ProfilPic;
 import com.alex.blog_back.repo.AppUserRepo;
@@ -103,6 +104,49 @@ public class ArticleServiceImpl implements ArticleService {
                         .replace(":", "h")
         );
         return articleRepo.save(article);
+    }
+
+    @Override
+    public Article addArticleWithAuteurNamePicture(ArticleRequestTemplate model) throws IllegalAccessException, IOException {
+
+//        AppUser auteur = appUserRepo.findByUsername(username)
+//                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Erreur, aucun auteur défini"));
+//
+//        Categorie categorie =   categorieRepo.findCategorieByNom(articleCategorie)
+//                        .orElse(null);
+
+        String fileName = StringUtils.cleanPath(Objects.requireNonNull(model.getPicture().getOriginalFilename()));
+
+        ProfilPic FileDB = new ProfilPic(fileName, model.getPicture().getContentType(), model.getPicture().getBytes());
+
+        if (!Objects.equals(model.getUsername(), SecurityContextHolder.getContext().getAuthentication().getPrincipal())) {
+            throw new IllegalAccessException("Mauvais utilisateur");
+        }
+
+        Article currentArticle = new Article(
+                null,
+                model.getTitre(),
+                model.getContenu(),
+                appUserRepo.findByUsername(model.getUsername())
+                        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Erreur, aucun auteur défini")),
+                categorieRepo.findCategorieByNom(model.getCategorie())
+                        .orElse(null));
+
+        DateFormat mediumDateFormat = (DateFormat.getDateTimeInstance(
+                DateFormat.MEDIUM,
+                DateFormat.MEDIUM));
+        String date = mediumDateFormat.format(new Date());
+        currentArticle.setDate(
+                ("Le " + date.substring(0, date.length() - 3))
+                        .replace(":", "h")
+        );
+
+        currentArticle.setArticlePicture(new ProfilPic(
+                fileName,
+                model.getPicture().getContentType(),
+                model.getPicture().getBytes()));
+
+        return articleRepo.save(currentArticle);
     }
 
 
