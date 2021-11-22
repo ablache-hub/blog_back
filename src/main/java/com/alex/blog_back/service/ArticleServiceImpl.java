@@ -108,20 +108,13 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Override
     public Article addArticleWithAuteurNamePicture(ArticleRequestTemplate model) throws IllegalAccessException, IOException {
-
-//        AppUser auteur = appUserRepo.findByUsername(username)
-//                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Erreur, aucun auteur défini"));
-//
-//        Categorie categorie =   categorieRepo.findCategorieByNom(articleCategorie)
-//                        .orElse(null);
-
-        String fileName = StringUtils.cleanPath(Objects.requireNonNull(model.getPicture().getOriginalFilename()));
-
-        ProfilPic FileDB = new ProfilPic(fileName, model.getPicture().getContentType(), model.getPicture().getBytes());
-
-        if (!Objects.equals(model.getUsername(), SecurityContextHolder.getContext().getAuthentication().getPrincipal())) {
+        //Vérification username nouvel article == username authentifié
+        if (!Objects.equals(
+                model.getUsername(),
+                SecurityContextHolder.getContext().getAuthentication().getPrincipal())) {
             throw new IllegalAccessException("Mauvais utilisateur");
         }
+//        ProfilPic FileDB = new ProfilPic(newFileName, model.getPicture().getContentType(), model.getPicture().getBytes());
 
         Article currentArticle = new Article(
                 null,
@@ -141,8 +134,11 @@ public class ArticleServiceImpl implements ArticleService {
                         .replace(":", "h")
         );
 
+//        String newFileName = StringUtils.cleanPath(Objects.requireNonNull(
+//                model.getPicture().getOriginalFilename()));
+
         currentArticle.setArticlePicture(new ProfilPic(
-                fileName,
+                model.getPicture().getOriginalFilename(),
                 model.getPicture().getContentType(),
                 model.getPicture().getBytes()));
 

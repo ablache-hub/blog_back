@@ -3,6 +3,7 @@ package com.alex.blog_back.controller;
 import com.alex.blog_back.model.Article;
 
 import com.alex.blog_back.model.ArticleRequestTemplate;
+import com.alex.blog_back.service.ArticleService;
 import com.alex.blog_back.service.ArticleServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -18,9 +19,9 @@ import java.util.Optional;
 @RequestMapping("/article")
 @RequiredArgsConstructor
 public class ArticleController {
-    final private ArticleServiceImpl articleService;
+    final private ArticleService articleService;
 
-    //GET all articles
+    //FETCH/GET all articles
     @GetMapping("/get/all")
     ResponseEntity<List<Article>> getAllArticles() {
         return ResponseEntity.ok().body(
@@ -28,21 +29,21 @@ public class ArticleController {
         );
     }
 
-    //GET Article par Id
+    //FETCH/GET Article par Id
     @GetMapping("/get/{id}")
     ResponseEntity<Optional<Article>> findArticleById(
             @PathVariable Long id) {
         return ResponseEntity.ok(articleService.findArticleById(id));
     }
 
-    //GET articles par catégorie
+    //FETCH/GET articles par catégorie
     @GetMapping("/get/allByCategorie/{categorie}")
     ResponseEntity<Optional<List<Article>>> findAllArticleByCategorie(
             @PathVariable("categorie") String categorie) {
         return ResponseEntity.ok().body(articleService.findAllArticleByCategorieServ(categorie));
     }
 
-    // ADD Nouvel Article avec auteur et catégorie
+    // POST/ADD Nouvel Article
     @PreAuthorize("hasRole('ROLE_AUTEUR')")
     @PostMapping("/new/")
     ResponseEntity<?> addArticleByAuteur(
@@ -50,7 +51,7 @@ public class ArticleController {
         return ResponseEntity.ok().body(articleService.addArticleWithAuteurNamePicture(model));
     }
 
-    //UPDATE Article
+    //UPDATE/PUT Article
     @PutMapping("auteur/{username}/modify")
     @PreAuthorize("hasRole('ROLE_AUTEUR')")
     ResponseEntity<Article> modifyArticle(@PathVariable String username,
