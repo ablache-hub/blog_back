@@ -136,11 +136,12 @@ public class ArticleServiceImpl implements ArticleService {
 
 //        String newFileName = StringUtils.cleanPath(Objects.requireNonNull(
 //                model.getPicture().getOriginalFilename()));
-
-        currentArticle.setArticlePicture(new ProfilPic(
-                model.getPicture().getOriginalFilename(),
-                model.getPicture().getContentType(),
-                model.getPicture().getBytes()));
+        if (model.getPicture() != null) {
+            currentArticle.setArticlePicture(new ProfilPic(
+                    model.getPicture().getOriginalFilename(),
+                    model.getPicture().getContentType(),
+                    model.getPicture().getBytes()));
+        }
 
         return articleRepo.save(currentArticle);
     }
