@@ -11,6 +11,8 @@ import com.sun.jdi.request.DuplicateRequestException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -23,6 +25,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import javax.transaction.Transactional;
 import java.io.IOException;
+import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 
@@ -102,6 +105,39 @@ public class AppUserImpl implements AppUserService, UserDetailsService {
                         file.getContentType(),
                         file.getBytes())
         );
+        return appUserRepo.save(currentUser);
+    }
+
+    @Override
+    public AppUser updateUser(String username, AppUser user) throws IllegalAccessException {
+        if (!Objects.equals(
+                username,
+                SecurityContextHolder.getContext().getAuthentication().getPrincipal())) {
+            throw new IllegalAccessException("Mauvais utilisateur");
+        }
+
+
+        AppUser currentUser = appUserRepo.findByUsername(username)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "L'utilisateur " + username + " n'existe pas"));
+
+        Collection<SimpleGrantedAuthority> nowAuthorities =
+                (Collection<SimpleGrantedAuthority>) SecurityContextHolder.getContext()
+                        .getAuthentication()
+                        .getAuthorities();
+        UsernamePasswordAuthenticationToken authentication =
+                new UsernamePasswordAuthenticationToken(username, nowAuthorities);
+
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
+
+        if (user.getUsername() != null) {
+            currentUser.setUsername(user.getUsername());
+        }
+
+        if (user.getName() != null) {
+            currentUser.setName(user.getName());
+        }
+
         return appUserRepo.save(currentUser);
     }
 

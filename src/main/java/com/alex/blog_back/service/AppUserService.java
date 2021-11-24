@@ -24,4 +24,6 @@ public interface AppUserService {
 
     AppUser addProfilpicToUser(MultipartFile file, String username) throws IOException;
 
+    AppUser updateUser(String username, AppUser user) throws IllegalAccessException;
+
 }

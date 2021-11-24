@@ -55,5 +55,11 @@ public class AppUserController {
         return ResponseEntity.created(uri).build();
     }
 
+    @PutMapping("{username}")
+    public ResponseEntity<AppUser> updateUser(@PathVariable String username,
+                                              @RequestBody AppUser user) throws IllegalAccessException {
+        return ResponseEntity.ok().body(appUserService.updateUser(username, user));
+    }
+
 }
 
