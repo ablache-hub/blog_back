@@ -72,6 +72,5 @@ public class AppUserController {
     public ResponseEntity<Void> deleteUser() {
         return ResponseEntity.accepted().body(appUserService.deleteUser());
     }
-
 }
 

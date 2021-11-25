@@ -11,6 +11,7 @@ import lombok.Setter;
 @Getter
 public class SubRequestTemplate {
     private String username;
+    private String name;
     private String password;
 }
 
