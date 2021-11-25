@@ -12,7 +12,7 @@
     <artifactId>heap_project</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>heap_project</name>
-    <description>Mobile App for connects merchants and customers </description>
+    <description>Mobile App for connects merchants and customers</description>
     <properties>
         <java.version>11</java.version>
     </properties>
@@ -75,6 +75,24 @@
             <artifactId>guava</artifactId>
             <version>30.1-jre</version>
         </dependency>
+        <!-- Junit 5 -->
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.platform</groupId>
+            <artifactId>junit-platform-launcher</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- Mockito extention -->
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-junit-jupiter</artifactId>

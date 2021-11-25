@@ -25,6 +25,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import javax.transaction.Transactional;
 import java.io.IOException;
+import java.lang.module.FindException;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
@@ -51,20 +52,34 @@ public class AppUserImpl implements AppUserService, UserDetailsService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "L'utilisateur " + username + " n'existe pas"));
     }
 
-    //TODO Ajouter controles divers
     @Override
     public AppUser newUser(SubRequestTemplate subUser) {
-        log.info("Enregistrement de l'utilisateur {}", subUser.getUsername());
-        subUser.setPassword(passwordEncoder.encode(subUser.getPassword()));
-        return appUserRepo.save(
-                new AppUser(
-                        subUser.getUsername(),
-                        subUser.getPassword())
-        );
- /*       Role role = roleRepo.findByName("ROLE_USER");
-        AppUser nouveau  = appUserRepo.findByUsername(subUser.getUsername());
-        nouveau.getRoles().add(role);
-        return nouveau;*/
+
+        if (appUserRepo.findByUsername(subUser.getUsername()).isPresent()) {
+            throw new FindException("Utilisateur existant");
+        }
+
+        AppUser currentUser = new AppUser();
+
+        if (subUser.getUsername() != null) {
+            currentUser.setUsername(subUser.getUsername());
+        } else {
+            throw new NullPointerException("Username requête null");
+        }
+
+        if (subUser.getPassword() != null) {
+            currentUser.setPassword(
+                    passwordEncoder.encode(subUser.getPassword())
+            );
+        } else {
+            throw new NullPointerException("Password requête null");
+        }
+
+        appUserRepo.save(currentUser);
+        // Pour une version prod, on attribuerait ROLE_LECTEUR et il incomberait à l'admin d'ajouter ROLE_AUTEUR si besoin
+        addRoleToUser(currentUser.getUsername(), "ROLE_AUTEUR");
+
+        return currentUser;
     }
 
     @Override
@@ -139,6 +154,15 @@ public class AppUserImpl implements AppUserService, UserDetailsService {
         }
 
         return appUserRepo.save(currentUser);
+    }
+
+    @Override
+    public Void deleteUser() {
+        appUserRepo.delete(
+                appUserRepo.findByUsername((String) SecurityContextHolder.getContext().getAuthentication().getPrincipal())
+                        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Utilisateur inexistant"))
+        );
+        return null;
     }
 
     @Override

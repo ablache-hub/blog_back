@@ -26,23 +26,29 @@ public class BlogBackApplication {
         SpringApplication.run(BlogBackApplication.class, args);
     }
 
-//    @Bean
-//    CommandLineRunner run(AppUserService appUserService, ArticleService articleService) {
-//        return args -> {
-//            appUserService.newRole(new Role(null, "ROLE_USER"));
-//            appUserService.newRole(new Role(null, "ROLE_ADMIN"));
+    @Bean
+    CommandLineRunner run(AppUserService appUserService, ArticleService articleService, CategorieService categorieService) {
+        return args -> {
+//            appUserService.newRole(new Role("ROLE_AUTEUR"));
+//            appUserService.newRole(new Role("ROLE_ADMIN"));
+//            appUserService.newRole(new Role(null, "ROLE_LECTEUR"));
 //
-//            appUserService.newUser(new SubRequestTemplate("test@gmail.com", "test"));
-//            appUserService.newUser(new SubRequestTemplate("test2@gmail.com", "test"));
+//            categorieService.newCategorie(new Categorie("Cinema"));
+//            categorieService.newCategorie(new Categorie("Cuisine"));
+//            categorieService.newCategorie(new Categorie("Santé"));
+//            categorieService.newCategorie(new Categorie("Sport"));
+//            categorieService.newCategorie(new Categorie("Technologie"));
 //
-//            appUserService.addRoleToUser("test2@gmail.com", "ROLE_ADMIN");
+//            appUserService.newUser(new SubRequestTemplate("lecteur@gmail.com", "test"));
+//            appUserService.newUser(new SubRequestTemplate("auteur@gmail.com", "test"));
+//            appUserService.newUser(new SubRequestTemplate("admin@gmail.com", "test"));
 //
-//            articleService.addArticle(new Article(null, "Mon premier article", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.", null, null));
-//            articleService.addArticle(new Article(null, "Lorem test", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.", null, null));
-//
-//
-//        };
-//    }
+//            appUserService.addRoleToUser("lecteur@gmail.com", "ROLE_LECTEUR");
+//            appUserService.addRoleToUser("auteur@gmail.com", "ROLE_AUTEUR");
+//            appUserService.addRoleToUser("admin@gmail.com", "ROLE_ADMIN");
+
+        };
+    }
 
     @Bean
     BCryptPasswordEncoder passwordEncoder() {

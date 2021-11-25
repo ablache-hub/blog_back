@@ -21,7 +21,6 @@ import java.util.List;
 @Getter
 @Setter
 public class AppUser implements UserDetails {
-
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
@@ -36,7 +35,7 @@ public class AppUser implements UserDetails {
     @JsonIgnoreProperties({"appUser", "data", "article"})
     private ProfilPic profilePicture;
 
-    @OneToMany(mappedBy = "auteur")
+    @OneToMany(mappedBy = "auteur", cascade = CascadeType.ALL)
     @JsonIgnoreProperties({"auteur"})
     private List<Article> articles;
 

@@ -24,4 +24,8 @@ public class Categorie {
     @JsonIgnore
     @OneToMany(mappedBy = "categorie")
     List<Article> articles;
+
+    public Categorie(String nom) {
+        this.nom = nom;
+    }
 }

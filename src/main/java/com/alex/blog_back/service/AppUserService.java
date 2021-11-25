@@ -26,4 +26,6 @@ public interface AppUserService {
 
     AppUser updateUser(String username, AppUser user) throws IllegalAccessException;
 
+    Void deleteUser();
+
 }
