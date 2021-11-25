@@ -24,9 +24,10 @@ public class AppUser implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    private String name;
     @Email(message = "Vous devez entrer un email comme nom d'utilisateur")
     private String username;
+    private String name;
+
     @JsonIgnore
     private String password;
 

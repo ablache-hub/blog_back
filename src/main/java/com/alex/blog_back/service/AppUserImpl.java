@@ -66,6 +66,10 @@ public class AppUserImpl implements AppUserService, UserDetailsService {
         } else {
             throw new NullPointerException("Username requête null");
         }
+        
+        if (subUser.getName() != null) {
+            currentUser.setName(subUser.getName());
+        }
 
         if (subUser.getPassword() != null) {
             currentUser.setPassword(
