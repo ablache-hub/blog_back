@@ -29,6 +29,10 @@ public class BlogBackApplication {
     @Bean
     CommandLineRunner run(AppUserService appUserService, ArticleService articleService, CategorieService categorieService) {
         return args -> {
+            System.out.println(Runtime.class.getPackage().getImplementationVersion());
+            Runtime.Version version = Runtime.version();
+            System.out.println(version);
+
 //            appUserService.newRole(new Role("ROLE_AUTEUR"));
 //            appUserService.newRole(new Role("ROLE_ADMIN"));
 //            appUserService.newRole(new Role(null, "ROLE_LECTEUR"));
