@@ -67,11 +67,10 @@ public class JwtAuthFilter extends UsernamePasswordAuthenticationFilter {
                 .setExpiration(java.sql.Date.valueOf(LocalDate.now().plusDays(10))) // Quand le token va expirer
                 .signWith(Keys.hmacShaKeyFor("kjhkjhkjhiuiuyè_-è_-_ètighjgkghiuhgiuyèç_-_(-èrtuyrfuygfjhgiuyyut".getBytes()))
                 .compact();
-
         // Renvoie du token dans le header de la response envoyée au client de la part du sever
         response.addHeader(HttpHeaders.AUTHORIZATION, "Bearer " + token);
-        response.addHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_CREDENTIALS, tryAuthenticationSucces.getName());
-        response.addHeader(HttpHeaders.ALLOW, String.valueOf(tryAuthenticationSucces.getAuthorities()));
+        response.addHeader("Username", tryAuthenticationSucces.getName());
+        response.addHeader("Role", String.valueOf(tryAuthenticationSucces.getAuthorities()));
 //        response.getWriter().write(String.valueOf(tryAuthenticationSucces.getAuthorities()));
 
     }

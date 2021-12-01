@@ -67,6 +67,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         configuration.setAllowedOriginPatterns(allowOrigins);
         configuration.setAllowedMethods(singletonList("*"));
         configuration.setAllowedHeaders(singletonList("*"));
+        configuration.setExposedHeaders(List.of("Authorization", "Role", "Username"));
+
+
         //in case authentication is enabled this flag MUST be set, otherwise CORS requests will fail
         configuration.setAllowCredentials(true);
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
