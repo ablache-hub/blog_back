@@ -19,6 +19,12 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+import springfox.documentation.builders.PathSelectors;
+import springfox.documentation.builders.RequestHandlerSelectors;
+import springfox.documentation.spi.DocumentationType;
+import springfox.documentation.spring.web.plugins.Docket;
+import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 import java.util.Arrays;
 import java.util.List;
@@ -29,6 +35,7 @@ import static java.util.Collections.singletonList;
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true) //Permet l'utilisation de PreAuthorize dans le controller
 @RequiredArgsConstructor
+@EnableSwagger2
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
     //TODO Tester avec cette variable plutôt que le bean
 //    private final AuthenticationManager authenticationManager;
@@ -75,6 +82,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return super.authenticationManagerBean();
     }
 
+    @Bean
+    public Docket docket() {
+        return new Docket(DocumentationType.SWAGGER_2)
+                .select()
+                .apis(RequestHandlerSelectors.basePackage("com.alex.blog_back"))
+//                .paths(PathSelectors.any())
+                .build();
+
+    }
+
     @Override
     public void configure(WebSecurity web) {
         web.ignoring().antMatchers("/api/user/subscribe",
@@ -84,6 +101,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 "/article/get/**",
                 "/api/user/get/**",
                 "/api/categorie/**",
-                "/file/**");
+                "/file/**",
+                "/v2/**",
+                "/swagger-ui.html",
+                "/webjars/**",
+                "/v2/**",
+                "/swagger-resources/**",
+                "/swagger-ui/**");
     }
 }

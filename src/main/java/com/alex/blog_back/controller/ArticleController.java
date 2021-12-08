@@ -4,7 +4,8 @@ import com.alex.blog_back.model.Article;
 
 import com.alex.blog_back.model.ArticleRequestTemplate;
 import com.alex.blog_back.service.ArticleService;
-import com.alex.blog_back.service.ArticleServiceImpl;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -18,11 +19,17 @@ import java.util.Optional;
 @CrossOrigin
 @RequestMapping("/article")
 @RequiredArgsConstructor
+@Api(
+        value = "/article",
+        tags = "Controlleur Article",
+        description = "Controlleur des articles",
+        produces = "application/json")
 public class ArticleController {
     final private ArticleService articleService;
 
     //FETCH/GET all articles
     @GetMapping("/get/all")
+    @ApiOperation(value = "Reqûete GET de la liste de tous les articles", responseContainer = "List")
     ResponseEntity<List<Article>> getAllArticles() {
         return ResponseEntity.ok().body(
                 articleService.findAllArticle()
@@ -31,6 +38,7 @@ public class ArticleController {
 
     //FETCH/GET Article par Id
     @GetMapping("/get/{id}")
+    @ApiOperation(value = "Requête GET d'un article par son Id unique")
     ResponseEntity<Optional<Article>> findArticleById(
             @PathVariable Long id) {
         return ResponseEntity.ok(articleService.findArticleById(id));
@@ -38,6 +46,7 @@ public class ArticleController {
 
     //FETCH/GET articles par catégorie
     @GetMapping("/get/allByCategorie/{categorie}")
+    @ApiOperation(value = "Get la liste des articles par catégorie")
     ResponseEntity<Optional<List<Article>>> findAllArticleByCategorie(
             @PathVariable("categorie") String categorie) {
         return ResponseEntity.ok().body(articleService.findAllArticleByCategorieServ(categorie));
@@ -46,6 +55,8 @@ public class ArticleController {
     // POST/ADD Nouvel Article
     @PreAuthorize("hasRole('ROLE_AUTEUR')")
     @PostMapping("/new/")
+    @ApiOperation(value = "Enregistrement d'un nouvel article",
+            notes = "La requête fonctionne avec ou sans adjonction d'image")
     ResponseEntity<?> addArticleByAuteur(
             @ModelAttribute ArticleRequestTemplate model) throws IllegalAccessException, IOException {
         return ResponseEntity.ok().body(articleService.addArticleWithAuteurNamePicture(model));
@@ -54,6 +65,8 @@ public class ArticleController {
     //UPDATE/PUT Article
     @PutMapping("auteur/{username}/modify")
     @PreAuthorize("hasRole('ROLE_AUTEUR')")
+    @ApiOperation(value = "Modification d'un article",
+            notes = "L'utilisateur authentifié doit impérativement être l'auteur de l'article à modifier, sinon la requête sera bloquée")
     ResponseEntity<Article> modifyArticle(@PathVariable String username,
                                           @RequestBody Article article,
                                           @RequestParam(required = false) String categorie) throws IllegalAccessException {
@@ -63,6 +76,8 @@ public class ArticleController {
     //DEL Article
     @PreAuthorize("hasRole('ROLE_AUTEUR')")
     @DeleteMapping("auteur/{username}/delete/{id}")
+    @ApiOperation(value = "Suppression d'un article",
+            notes = "L'utilisateur authentifié doit impérativement être l'auteur de l'article à supprimer, sinon la requête sera bloquée")
     ResponseEntity<Article> deleteArticleByAuthorAndId(
             @PathVariable(value = "username") String username,
             @PathVariable(value = "id") Long id) throws IllegalAccessException {
