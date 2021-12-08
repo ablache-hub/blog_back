@@ -78,14 +78,14 @@ public class ArticleController {
     }*/
 
 
-    // POST Nouvel Article avec auteur et catégorie
+  /*  // POST Nouvel Article avec auteur et catégorie
     @PreAuthorize("hasRole('ROLE_AUTEUR')")
     @PostMapping("/{username}")
     ResponseEntity<Article> addArticleWithAuteur(@RequestBody Article article,
                                                  @PathVariable String username,
                                                  @RequestParam(required = false) String categorie) throws IllegalAccessException {
         return ResponseEntity.ok().body(articleService.addArticleWithAuteurName(article, username, categorie));
-    }
+    }*/
 
 
 }

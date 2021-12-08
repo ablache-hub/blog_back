@@ -6,6 +6,7 @@ import com.google.common.net.HttpHeaders;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import lombok.AllArgsConstructor;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -24,6 +25,7 @@ import java.util.Date;
 public class JwtAuthFilter extends UsernamePasswordAuthenticationFilter {
 
     private final AuthenticationManager authenticationManager;
+    private final JwtConfig jwtConfig;
 
 
     // Récupération des données client et tentative d'authentification
@@ -65,7 +67,7 @@ public class JwtAuthFilter extends UsernamePasswordAuthenticationFilter {
                 .claim("authorities", tryAuthenticationSucces.getAuthorities()) // On définie les authorities propre à l'user dans le body/claim du token
                 .setIssuedAt(new Date()) // Set la date de création du token
                 .setExpiration(java.sql.Date.valueOf(LocalDate.now().plusDays(10))) // Quand le token va expirer
-                .signWith(Keys.hmacShaKeyFor("kjhkjhkjhiuiuyè_-è_-_ètighjgkghiuhgiuyèç_-_(-èrtuyrfuygfjhgiuyyut".getBytes()))
+                .signWith(jwtConfig.getSecretKey())
                 .compact();
         // Renvoie du token dans le header de la response envoyée au client de la part du sever
         response.addHeader(HttpHeaders.AUTHORIZATION, "Bearer " + token);

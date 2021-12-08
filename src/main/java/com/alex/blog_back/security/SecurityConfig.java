@@ -1,6 +1,7 @@
 package com.alex.blog_back.security;
 
 import com.alex.blog_back.jwt.JwtAuthFilter;
+import com.alex.blog_back.jwt.JwtConfig;
 import com.alex.blog_back.jwt.JwtRequestTokenFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -31,36 +32,30 @@ import static java.util.Collections.singletonList;
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
     //TODO Tester avec cette variable plutôt que le bean
 //    private final AuthenticationManager authenticationManager;
-    private final UserDetailsService userDetailsService;
-    private final BCryptPasswordEncoder bCryptPasswordEncoder;
+//    private final UserDetailsService userDetailsService;
+//    private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final JwtConfig jwtConfig;
 
-    @Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userDetailsService).passwordEncoder(bCryptPasswordEncoder);
-    }
+
+//    @Override
+//    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+//        auth.userDetailsService(userDetailsService).passwordEncoder(bCryptPasswordEncoder);
+//    }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .csrf().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
-                .addFilter(new JwtAuthFilter(authenticationManager()))
-                .addFilterAfter(new JwtRequestTokenFilter(), JwtAuthFilter.class)
+                .addFilter(new JwtAuthFilter(authenticationManager(), jwtConfig))
+                .addFilterAfter(new JwtRequestTokenFilter(jwtConfig), JwtAuthFilter.class)
                 .authorizeRequests()
 //              .antMatchers(/*"/", "/index",*/ "/registration").permitAll().
                 .anyRequest()
                 .authenticated();
         http.cors().configurationSource(corsConfigurationSource());
-
-
-        ;
-               /* .authorizeRequests()
-                .antMatchers("/**").permitAll()
-                .anyRequest().authenticated();*/
-
     }
 
-    //This can be customized as required
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         List<String> allowOrigins = Arrays.asList("*");
@@ -68,9 +63,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         configuration.setAllowedMethods(singletonList("*"));
         configuration.setAllowedHeaders(singletonList("*"));
         configuration.setExposedHeaders(List.of("Authorization", "Role", "Username"));
-
-
-        //in case authentication is enabled this flag MUST be set, otherwise CORS requests will fail
         configuration.setAllowCredentials(true);
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
@@ -93,6 +85,5 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 "/api/user/get/**",
                 "/api/categorie/**",
                 "/file/**");
-//        web.ignoring().antMatchers("**");
     }
 }

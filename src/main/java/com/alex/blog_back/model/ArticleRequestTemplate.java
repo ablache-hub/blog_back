@@ -14,7 +14,6 @@ public class ArticleRequestTemplate {
     private String contenu;
     private String categorie;
     private MultipartFile picture;
-
 }
 
 

@@ -16,18 +16,10 @@ import javax.crypto.SecretKey;
 @Getter
 @Setter
 public class JwtConfig {
-
     private  String secretKey;
-    private  String tokenPrefix;
-    private  int tokenDateExpirationDays;
 
     // Cryptage SecretKey
     public SecretKey getSecretKey(){
         return Keys.hmacShaKeyFor(secretKey.getBytes());
-    }
-
-    // Envoyer le type de Header en response au client
-    public String getAuthorizationHeader(){
-        return HttpHeaders.AUTHORIZATION;
     }
 }

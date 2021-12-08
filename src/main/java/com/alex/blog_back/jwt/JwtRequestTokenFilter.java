@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
 
 @AllArgsConstructor
 public class JwtRequestTokenFilter extends OncePerRequestFilter {
-
+    private final JwtConfig jwtConfig;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
@@ -47,7 +47,7 @@ public class JwtRequestTokenFilter extends OncePerRequestFilter {
         try{
             // Extraction / Analyse du token récupéré. "Tu me redécodes mon token" Alex.2021
             Jws<Claims> tokenExtract = Jwts.parserBuilder()
-                                        .setSigningKey(Keys.hmacShaKeyFor("kjhkjhkjhiuiuyè_-è_-_ètighjgkghiuhgiuyèç_-_(-èrtuyrfuygfjhgiuyyut".getBytes()))
+                                        .setSigningKey(jwtConfig.getSecretKey())
                                         .build()
                                         .parseClaimsJws(tokenAlone);
 

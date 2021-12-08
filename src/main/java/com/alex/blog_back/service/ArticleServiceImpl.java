@@ -35,7 +35,6 @@ public class ArticleServiceImpl implements ArticleService {
     private final CategorieRepo categorieRepo;
     private final ProfilPicRepository profilPicRepository;
 
-
     @Override
     public Optional<Article> findArticleById(Long id) {
         return articleRepo.findById(id);
@@ -51,7 +50,6 @@ public class ArticleServiceImpl implements ArticleService {
         return categorieRepo.findAll();
     }
 
-
     @Override
     public Article addArticle(Article article) {
         return articleRepo.save(article);
@@ -59,7 +57,6 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Override
     public void updateArticle(Long id, Article article) {
-
     }
 
     @Override
