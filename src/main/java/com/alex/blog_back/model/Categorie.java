@@ -1,7 +1,7 @@
 package com.alex.blog_back.model;
 
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -23,6 +23,9 @@ public class Categorie {
 
     @JsonIgnore
     @OneToMany(mappedBy = "categorie")
+    @ApiModelProperty(
+            value = "Articles associés à la catégorie (objet type 'List Article', relation OneToMany)",
+            dataType = "List<Article>")
     List<Article> articles;
 
     public Categorie(String nom) {

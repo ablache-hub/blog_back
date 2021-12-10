@@ -6,6 +6,7 @@ import com.alex.blog_back.model.ArticleRequestTemplate;
 import com.alex.blog_back.service.ArticleService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -21,8 +22,8 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @Api(
         value = "/article",
-        tags = "Controlleur Article",
-        description = "Controlleur des articles",
+        tags = "Contrôleur Article",
+        description = "Contrôleur des articles",
         produces = "application/json")
 public class ArticleController {
     final private ArticleService articleService;
@@ -40,7 +41,10 @@ public class ArticleController {
     @GetMapping("/get/{id}")
     @ApiOperation(value = "Requête GET d'un article par son Id unique")
     ResponseEntity<Optional<Article>> findArticleById(
-            @PathVariable Long id) {
+            @ApiParam(name = "Id d'un article",
+                    type = "Long",
+                    value = "L'id de l'article voulu",
+                    example = "5") @PathVariable Long id) {
         return ResponseEntity.ok(articleService.findArticleById(id));
     }
 
@@ -48,7 +52,10 @@ public class ArticleController {
     @GetMapping("/get/allByCategorie/{categorie}")
     @ApiOperation(value = "Get la liste des articles par catégorie")
     ResponseEntity<Optional<List<Article>>> findAllArticleByCategorie(
-            @PathVariable("categorie") String categorie) {
+            @ApiParam(name = "categorie",
+                    type = "String",
+                    value = "Une catégorie existante",
+                    example = "Sport") @PathVariable("categorie") String categorie) {
         return ResponseEntity.ok().body(articleService.findAllArticleByCategorieServ(categorie));
     }
 
@@ -58,7 +65,10 @@ public class ArticleController {
     @ApiOperation(value = "Enregistrement d'un nouvel article",
             notes = "La requête fonctionne avec ou sans adjonction d'image")
     ResponseEntity<?> addArticleByAuteur(
-            @ModelAttribute ArticleRequestTemplate model) throws IllegalAccessException, IOException {
+            @ApiParam(name = "Article",
+                    type = "ArticleRequestTemplate",
+                    value = "Un article avec ou sans image",
+                    example = "Sport") @ModelAttribute ArticleRequestTemplate model) throws IllegalAccessException, IOException {
         return ResponseEntity.ok().body(articleService.addArticleWithAuteurNamePicture(model));
     }
 
@@ -68,8 +78,15 @@ public class ArticleController {
     @ApiOperation(value = "Modification d'un article",
             notes = "L'utilisateur authentifié doit impérativement être l'auteur de l'article à modifier, sinon la requête sera bloquée")
     ResponseEntity<Article> modifyArticle(@PathVariable String username,
-                                          @RequestBody Article article,
-                                          @RequestParam(required = false) String categorie) throws IllegalAccessException {
+                                          @ApiParam(
+                                                  name = "Article MàJ",
+                                                  type = "Article",
+                                                  value = "La reqûete doit contenir la MàJ de l'article sous forme de modèle d'article",
+                                                  required = true) @RequestBody Article article,
+                                          @ApiParam(name = "categorie",
+                                                  type = "String",
+                                                  value = "Une catégorie existante",
+                                                  example = "Sport") @RequestParam(required = false) String categorie) throws IllegalAccessException {
         return ResponseEntity.ok().body(articleService.modifyArticle(username, article, categorie));
     }
 
@@ -80,7 +97,11 @@ public class ArticleController {
             notes = "L'utilisateur authentifié doit impérativement être l'auteur de l'article à supprimer, sinon la requête sera bloquée")
     ResponseEntity<Article> deleteArticleByAuthorAndId(
             @PathVariable(value = "username") String username,
-            @PathVariable(value = "id") Long id) throws IllegalAccessException {
+            @ApiParam(
+                    name = "id",
+                    type = "Long",
+                    value = "Id de l'article à supprimer",
+                    required = true) @PathVariable(value = "id") Long id) throws IllegalAccessException {
         articleService.deleteArticleByAuthorAndIdService(username, id);
         return ResponseEntity.accepted().build();
     }

@@ -3,9 +3,11 @@ package com.alex.blog_back.model;
 import javax.persistence.*;
 
 import com.alex.blog_back.auth.AppUser;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -32,9 +34,15 @@ public class ProfilPic {
     private String type;
 
     @OneToOne(mappedBy = "profilePicture")
+    @ApiModelProperty(
+            value = "Utilisateur unique associé à l'image (objet de type 'AppUser.class', relation OneToOne)",
+            dataType = "AppUser")
     private AppUser appUser;
 
     @OneToOne(mappedBy = "articlePicture")
+    @ApiModelProperty(
+            value = "Article unique associé à l'image (objet de type 'Article.class', relation OneToOne)",
+            dataType = "Article")
     private Article article;
 
     @Lob
