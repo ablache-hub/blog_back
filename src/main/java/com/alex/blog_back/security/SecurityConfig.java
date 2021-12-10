@@ -98,7 +98,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 "/error",
                 "/api/role/save",
                 "/api/role/addroleuser",
-                "/article/get/**",
+                "/api/article/get/**",
                 "/api/user/get/**",
                 "/api/categorie/**",
                 "/api/file/get/**",
