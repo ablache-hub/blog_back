@@ -1,6 +1,7 @@
 package com.alex.blog_back.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -10,6 +11,7 @@ import lombok.Setter;
 import javax.persistence.*;
 import java.util.List;
 
+@ApiModel(description = "Classe représentant une catégorie dans l'application.")
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
@@ -18,7 +20,12 @@ import java.util.List;
 public class Categorie {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @ApiModelProperty(notes = "Identifiant unique de la catégorie",
+            example = "5")
     Long id;
+
+    @ApiModelProperty(notes = "Intitulé de la catégorie",
+            example = "Santé")
     String nom;
 
     @JsonIgnore

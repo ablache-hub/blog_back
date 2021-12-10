@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 
 @Controller
 @AllArgsConstructor
-@RequestMapping("/file")
+@RequestMapping("/api/file")
 @CrossOrigin
 @Api(
         value = "/file",
@@ -38,7 +38,7 @@ public class FileController {
     private final AppUserService appUserService;
     private final ArticleService articleService;
 
-    @GetMapping("/getAll")
+    @GetMapping("/get/getAll")
     @ApiOperation(value = "Liste de toutes les images")
     public ResponseEntity<List<ResponseFile>> getListFiles() {
         List<ResponseFile> files = storageService.getAllFiles().map(dbFile -> {
@@ -58,7 +58,7 @@ public class FileController {
         return ResponseEntity.status(HttpStatus.OK).body(files);
     }
 
-    @GetMapping("/getById/{id}")
+    @GetMapping("/get/getById/{id}")
     @ApiOperation(value = "Obtenir l'image par son Id")
     public ResponseEntity<byte[]> getFile(
             @ApiParam(name = "id",
@@ -72,15 +72,14 @@ public class FileController {
                 .body(fileDB.getData());
     }
 
-    @PostMapping("/user/{username}/upload")
+    @PostMapping("/user/upload")
     @ApiOperation(value = "Ajoute une image à l'utilisateur authentifié")
     public ResponseEntity<AppUser> addPicToUser(
             @ApiParam(name = "file",
                     type = "MultipartFile",
-                    value = "L'image à ajouter au compte de l'utilisateur authentifié") @RequestParam("file") MultipartFile file,
-            @PathVariable String username) throws IOException {
+                    value = "L'image à ajouter au compte de l'utilisateur authentifié") @RequestParam("file") MultipartFile file) throws IOException {
 
-        return ResponseEntity.ok().body(appUserService.addProfilpicToUser(file, username));
+        return ResponseEntity.ok().body(appUserService.addProfilpicToUser(file));
        /* String message = "";
         try {
             storageService.store(file);

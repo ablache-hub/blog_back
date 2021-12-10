@@ -2,6 +2,7 @@ package com.alex.blog_back.model;
 
 import com.alex.blog_back.auth.AppUser;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -9,17 +10,27 @@ import lombok.Setter;
 
 import javax.persistence.*;
 
+@ApiModel(description = "Classe représentant un article dans l'application.")
 @Entity
 @NoArgsConstructor
 @Getter
 @Setter
 public class Article {
+    @ApiModelProperty(notes = "Identifiant unique de l'article",
+            example = "1")
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @ApiModelProperty(notes = "Titre de l'article",
+            example = "Mon article")
     private String titre;
+    @ApiModelProperty(notes = "Contenu de l'article",
+            example = "Voici la contenu de cet article")
     @Column(length = 2000)
     private String contenu;
+    @ApiModelProperty(notes = "Date de création de l'article",
+            example = "25 mai 2005")
     private String date;
 
     @ManyToOne

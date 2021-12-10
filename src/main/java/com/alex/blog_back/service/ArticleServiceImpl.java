@@ -1,6 +1,5 @@
 package com.alex.blog_back.service;
 
-import com.alex.blog_back.auth.AppUser;
 import com.alex.blog_back.model.Article;
 import com.alex.blog_back.model.ArticleRequestTemplate;
 import com.alex.blog_back.model.Categorie;
@@ -46,61 +45,16 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     @Override
-    public List<Categorie> findAllCategorie() {
-        return categorieRepo.findAll();
-    }
-
-    @Override
-    public Article addArticle(Article article) {
-        return articleRepo.save(article);
-    }
-
-    @Override
-    public void updateArticle(Long id, Article article) {
-    }
-
-    @Override
-    public void deleteArticleByAuthorAndIdService(String username, Long id) throws IllegalAccessException {
+    public void deleteArticleByIdService(Long id) throws IllegalAccessException {
+        String username = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Article article = articleRepo.findById(id)
                 .orElseThrow(() -> new NullPointerException("Cet article n'éxiste pas"));
-        if (username.equals(article.getAuteur().getUsername()) &&
-                username.equals(SecurityContextHolder.getContext().getAuthentication().getPrincipal())
-        ) {
+
+        if (!username.equals(article.getAuteur().getUsername())) {
+            throw new IllegalAccessException("Accès non autorisé");
+        } else {
             articleRepo.deleteById(id);
-        } else
-            throw new IllegalAccessException("Action non autorisée pour cet utilisateur");
-
-    }
-
-    @Override
-    public Article addArticleWithAuteurName(Article article, String username, String categorie) throws IllegalAccessException {
-        //Vérification username nouvel article == username authentifié
-        if (!Objects.equals(username, SecurityContextHolder.getContext().getAuthentication().getPrincipal())) {
-            throw new IllegalAccessException("Mauvais utilisateur");
         }
-
-        //Verif existance username puis ajout dans l'article
-        article.setAuteur(
-                appUserRepo.findByUsername(username)
-                        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Erreur, aucun auteur défini"))
-        );
-
-        //Verif existance categorie puis ajout dans l'article
-        article.setCategorie(
-                categorieRepo.findCategorieByNom(categorie)
-                        .orElse(null));
-
-
-        //Enreg. date de création article
-        DateFormat mediumDateFormat = (DateFormat.getDateTimeInstance(
-                DateFormat.MEDIUM,
-                DateFormat.MEDIUM));
-        String date = mediumDateFormat.format(new Date());
-        article.setDate(
-                ("Le " + date.substring(0, date.length() - 3))
-                        .replace(":", "h")
-        );
-        return articleRepo.save(article);
     }
 
     @Override
@@ -152,13 +106,13 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     @Override
-    public Article modifyArticle(String username, Article newArticle, String categorie) throws IllegalAccessException {
-        if (!Objects.equals(username, SecurityContextHolder.getContext().getAuthentication().getPrincipal())) {
-            throw new IllegalAccessException("Mauvais utilisateur");
-        }
-
+    public Article modifyArticle(Article newArticle, String categorie) throws IllegalAccessException {
         Article currentArticle = articleRepo.findById(newArticle.getId())
                 .orElseThrow(() -> new NullPointerException("Cet article n'existe pas"));
+
+        if (!SecurityContextHolder.getContext().getAuthentication().getPrincipal().equals(currentArticle.getAuteur().getUsername())) {
+            throw new IllegalAccessException("Accès non autorisé");
+        }
 
         if (newArticle.getTitre() != null) {
             currentArticle.setTitre(newArticle.getTitre());
@@ -203,6 +157,7 @@ public class ArticleServiceImpl implements ArticleService {
         );
         return articleRepo.save(currentArticle);
     }
+
 /* @Override
     public Article addArticleWithAuteurId(Article article, Long idAuteur) {
         AppUser testUser = appUserRepo.findById(idAuteur).
@@ -222,4 +177,35 @@ public class ArticleServiceImpl implements ArticleService {
         return articleRepo.save(article);
     }*/
 
+      /*  @Override
+    public Article addArticleWithAuteurName(Article article, String username, String categorie) throws IllegalAccessException {
+        //Vérification username nouvel article == username authentifié
+        if (!Objects.equals(username, SecurityContextHolder.getContext().getAuthentication().getPrincipal())) {
+            throw new IllegalAccessException("Mauvais utilisateur");
+        }
+
+        //Verif existance username puis ajout dans l'article
+        article.setAuteur(
+                appUserRepo.findByUsername(username)
+                        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Erreur, aucun auteur défini"))
+        );
+
+        //Verif existance categorie puis ajout dans l'article
+        article.setCategorie(
+                categorieRepo.findCategorieByNom(categorie)
+                        .orElse(null));
+
+
+        //Enreg. date de création article
+        DateFormat mediumDateFormat = (DateFormat.getDateTimeInstance(
+                DateFormat.MEDIUM,
+                DateFormat.MEDIUM));
+        String date = mediumDateFormat.format(new Date());
+        article.setDate(
+                ("Le " + date.substring(0, date.length() - 3))
+                        .replace(":", "h")
+        );
+        return articleRepo.save(article);
+    }
+*/
 }

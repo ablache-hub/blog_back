@@ -18,7 +18,7 @@ import java.util.Optional;
 
 @RestController
 @CrossOrigin
-@RequestMapping("/article")
+@RequestMapping("/api/article")
 @RequiredArgsConstructor
 @Api(
         value = "/article",
@@ -73,36 +73,35 @@ public class ArticleController {
     }
 
     //UPDATE/PUT Article
-    @PutMapping("auteur/{username}/modify")
+    @PutMapping("/modify")
     @PreAuthorize("hasRole('ROLE_AUTEUR')")
     @ApiOperation(value = "Modification d'un article",
             notes = "L'utilisateur authentifié doit impérativement être l'auteur de l'article à modifier, sinon la requête sera bloquée")
-    ResponseEntity<Article> modifyArticle(@PathVariable String username,
-                                          @ApiParam(
-                                                  name = "Article MàJ",
-                                                  type = "Article",
-                                                  value = "La reqûete doit contenir la MàJ de l'article sous forme de modèle d'article",
-                                                  required = true) @RequestBody Article article,
-                                          @ApiParam(name = "categorie",
-                                                  type = "String",
-                                                  value = "Une catégorie existante",
-                                                  example = "Sport") @RequestParam(required = false) String categorie) throws IllegalAccessException {
-        return ResponseEntity.ok().body(articleService.modifyArticle(username, article, categorie));
+    ResponseEntity<Article> modifyArticle(
+            @ApiParam(
+                    name = "Article MàJ",
+                    type = "Article",
+                    value = "La requête doit contenir la MàJ de l'article sous forme de modèle d'article",
+                    required = true) @RequestBody Article article,
+            @ApiParam(name = "categorie",
+                    type = "String",
+                    value = "Une catégorie existante",
+                    example = "Sport") @RequestParam(required = false) String categorie) throws IllegalAccessException {
+        return ResponseEntity.ok().body(articleService.modifyArticle(article, categorie));
     }
 
     //DEL Article
     @PreAuthorize("hasRole('ROLE_AUTEUR')")
-    @DeleteMapping("auteur/{username}/delete/{id}")
+    @DeleteMapping("/delete/{id}")
     @ApiOperation(value = "Suppression d'un article",
             notes = "L'utilisateur authentifié doit impérativement être l'auteur de l'article à supprimer, sinon la requête sera bloquée")
     ResponseEntity<Article> deleteArticleByAuthorAndId(
-            @PathVariable(value = "username") String username,
             @ApiParam(
                     name = "id",
                     type = "Long",
                     value = "Id de l'article à supprimer",
                     required = true) @PathVariable(value = "id") Long id) throws IllegalAccessException {
-        articleService.deleteArticleByAuthorAndIdService(username, id);
+        articleService.deleteArticleByIdService(id);
         return ResponseEntity.accepted().build();
     }
 

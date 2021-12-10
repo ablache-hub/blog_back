@@ -85,14 +85,13 @@ public class AppUserController {
     }
 
     //PUT/UPDATE User Profil
-    @PutMapping("{username}")
+    @PutMapping("/update")
     @ApiOperation(value = "Update d'un utilisateur")
-    public ResponseEntity<AppUser> updateUser(@PathVariable String username,
-                                              @RequestBody AppUser user) throws IllegalAccessException {
-        return ResponseEntity.ok().body(appUserService.updateUser(username, user));
+    public ResponseEntity<AppUser> updateUser(@RequestBody AppUser user) {
+        return ResponseEntity.ok().body(appUserService.updateUser(user));
     }
 
-    @DeleteMapping("delete")
+    @DeleteMapping("/delete")
     @ApiOperation(value = "Suppression de l'utilisateur authentifié")
     public ResponseEntity<Void> deleteUser() {
         return ResponseEntity.accepted().body(appUserService.deleteUser());

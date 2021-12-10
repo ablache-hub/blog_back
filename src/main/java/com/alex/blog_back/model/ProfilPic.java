@@ -3,6 +3,7 @@ package com.alex.blog_back.model;
 import javax.persistence.*;
 
 import com.alex.blog_back.auth.AppUser;
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
@@ -10,12 +11,15 @@ import org.hibernate.annotations.GenericGenerator;
 import java.util.List;
 import java.util.UUID;
 
+@ApiModel(description = "Classe représentant un fichier (dans notre cas une image) dans l'application.")
 @Entity
 @RequiredArgsConstructor
 @Getter
 @Setter
 @Table(name = "profil_pic")
 public class ProfilPic {
+    @ApiModelProperty(notes = "Identifiant unique du fichier",
+            example = "5")
     @Id
     @GeneratedValue(generator = "uuid")
     @GenericGenerator(name = "uuid", strategy = "uuid2")
@@ -30,7 +34,12 @@ public class ProfilPic {
         }
     }*/
 
+    @ApiModelProperty(notes = "Nom du fichier",
+            example = "profil.png")
     private String name;
+
+    @ApiModelProperty(notes = "Type du fichier",
+            example = "png")
     private String type;
 
     @OneToOne(mappedBy = "profilePicture")

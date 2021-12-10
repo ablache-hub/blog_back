@@ -4,6 +4,7 @@ import com.alex.blog_back.model.Article;
 import com.alex.blog_back.model.ProfilPic;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
@@ -16,19 +17,30 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+@ApiModel(description = "Classe représentant un utilisateur dans l'application.")
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
 public class AppUser implements UserDetails {
+    @ApiModelProperty(notes = "Identifiant unique de l'utilisateur",
+            example = "5")
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+
+    @ApiModelProperty(notes = "Email de l'utilisateur",
+            example = "auteur@gmail.com")
     @Email(message = "Vous devez entrer un email comme nom d'utilisateur")
     private String username;
+
+    @ApiModelProperty(notes = "Nom de l'utilisateur",
+            example = "Billy")
     private String name;
 
+    @ApiModelProperty(notes = "Mot de passe de l'utilisateur",
+            example = "kgjhftrytdyd")
     @JsonIgnore
     private String password;
 

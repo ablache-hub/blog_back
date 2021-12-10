@@ -66,7 +66,7 @@ public class AppUserImpl implements AppUserService, UserDetailsService {
         } else {
             throw new NullPointerException("Username requête null");
         }
-        
+
         if (subUser.getName() != null) {
             currentUser.setName(subUser.getName());
         }
@@ -108,11 +108,12 @@ public class AppUserImpl implements AppUserService, UserDetailsService {
     }
 
     @Override
-    public AppUser addProfilpicToUser(MultipartFile file, String username) throws IOException {
-        AppUser currentUser = appUserRepo.findByUsername(username)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Erreur, utilisateur inexistant"));
+    public AppUser addProfilpicToUser(MultipartFile file) throws IOException {
+        AppUser currentUser = appUserRepo.findByUsername((String) SecurityContextHolder.getContext().getAuthentication().getPrincipal())
+                .orElse(null);
 
         //Suppression de l'ancienne image
+        assert currentUser != null;
         if (currentUser.getProfilePicture() != null) {
             profilPicRepository.delete(currentUser.getProfilePicture());
         }
@@ -128,23 +129,18 @@ public class AppUserImpl implements AppUserService, UserDetailsService {
     }
 
     @Override
-    public AppUser updateUser(String username, AppUser user) throws IllegalAccessException {
-        if (!Objects.equals(
-                username,
-                SecurityContextHolder.getContext().getAuthentication().getPrincipal())) {
-            throw new IllegalAccessException("Mauvais utilisateur");
-        }
-
-
-        AppUser currentUser = appUserRepo.findByUsername(username)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "L'utilisateur " + username + " n'existe pas"));
+    public AppUser updateUser(AppUser user) {
+        AppUser currentUser = appUserRepo.findByUsername((String) SecurityContextHolder.getContext().getAuthentication().getPrincipal())
+                .orElse(null);
 
         Collection<SimpleGrantedAuthority> nowAuthorities =
                 (Collection<SimpleGrantedAuthority>) SecurityContextHolder.getContext()
                         .getAuthentication()
                         .getAuthorities();
+
+        assert currentUser != null;
         UsernamePasswordAuthenticationToken authentication =
-                new UsernamePasswordAuthenticationToken(username, nowAuthorities);
+                new UsernamePasswordAuthenticationToken(currentUser.getUsername(), nowAuthorities);
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
 

@@ -89,8 +89,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .apis(RequestHandlerSelectors.basePackage("com.alex.blog_back"))
 //                .paths(PathSelectors.any())
                 .build();
-
     }
+
 
     @Override
     public void configure(WebSecurity web) {
@@ -101,7 +101,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 "/article/get/**",
                 "/api/user/get/**",
                 "/api/categorie/**",
-                "/file/**",
+                "/api/file/get/**",
                 "/v2/**",
                 "/swagger-ui.html",
                 "/webjars/**",

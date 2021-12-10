@@ -22,9 +22,9 @@ public interface AppUserService {
 
     List<AppUser> getUsers();
 
-    AppUser addProfilpicToUser(MultipartFile file, String username) throws IOException;
+    AppUser addProfilpicToUser(MultipartFile file) throws IOException;
 
-    AppUser updateUser(String username, AppUser user) throws IllegalAccessException;
+    AppUser updateUser(AppUser user);
 
     Void deleteUser();
 
