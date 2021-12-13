@@ -7,6 +7,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Type;
 
 import java.util.List;
 import java.util.UUID;
@@ -55,6 +56,7 @@ public class ProfilPic {
     private Article article;
 
     @Lob
+    @Type(type = "org.hibernate.type.ImageType")
     private byte[] data;
 
     public ProfilPic(String name, String type, byte[] data) {
