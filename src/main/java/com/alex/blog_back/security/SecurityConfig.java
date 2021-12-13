@@ -94,7 +94,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     public void configure(WebSecurity web) {
-        web.ignoring().antMatchers("/api/user/subscribe",
+        web.ignoring().antMatchers(
+                "/api/user/subscribe",
                 "/error",
                 "/api/role/save",
                 "/api/role/addroleuser",
